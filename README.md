@@ -4,9 +4,10 @@ Use ml1p13 env.
 
 USe frameX.jpg as images.
 
-create facenet folder after getting all files go to google drive 
+Go to google drive 
 
-https://drive.google.com/drive/folders/1pwQ3H4aJ8a6yyJHZkTwtjcL4wYWQb7bn download both files to facenet folder that you just created
+https://drive.google.com/drive/folders/1pwQ3H4aJ8a6yyJHZkTwtjcL4wYWQb7bn download both files 
+copy to facenet folder
 
 1. webcam_cv3_capture.py 
 
