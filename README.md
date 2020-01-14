@@ -1,6 +1,10 @@
 # capstone2
 
-Use ml1p13 env.
+Use ml1p13 env. Alternatively, use the following command to create ml1p13
+
+conda env create -f conda_env.yml
+
+Install packages from pip if you encounter missing packages.
 
 USe frameX.jpg as images.
 
