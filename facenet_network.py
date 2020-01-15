@@ -13,6 +13,11 @@ from time import sleep
 import numpy as np
 from matplotlib import pyplot as plt
 
+'''
+from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import img_to_array
+from keras.preprocessing.image import load_img
+'''
 from sklearn.model_selection import train_test_split
 
 
@@ -45,13 +50,12 @@ from skimage.transform import resize
 
 from sklearn.metrics import confusion_matrix
 #from sklearn.metrics import multilabel_confusion_matrix
-
-#Load facenet prediction which stored in CSV (Each file represent 1 image. First 4 images are used as recognized faces.
 X0 = loadtxt('img0_merged_representation.csv', delimiter=',')
 X1 = loadtxt('img1_merged_representation.csv', delimiter=',')
 X2 = loadtxt('img2_merged_representation.csv', delimiter=',')
 X3 = loadtxt('img4_merged_representation.csv', delimiter=',')
 X4 = loadtxt('img3_merged_representation.csv', delimiter=',')
+
 
 X5 = loadtxt('img6_merged_representation.csv', delimiter=',')
 X6 = loadtxt('img7_merged_representation.csv', delimiter=',')
@@ -63,7 +67,7 @@ X11 = loadtxt('img12_merged_representation.csv', delimiter=',')
 X12 = loadtxt('img13_merged_representation.csv', delimiter=',')
 X13 = loadtxt('img14_merged_representation.csv', delimiter=',')
 
-#Y0, Y1, Y2, Y3 are expected value for the multilabel network. 1 means fit the targeted image.
+
 Y0=np.append( np.ones(X0.shape[0]), np.zeros(X1.shape[0]),axis=0)
 Y0=np.append( Y0, np.zeros(X2.shape[0]),axis=0)
 Y0=np.append( Y0, np.zeros(X3.shape[0]),axis=0)
@@ -122,7 +126,7 @@ Y3=np.append( Y3, np.zeros(50),axis=0)
 Y3=np.append( Y3, np.zeros(50),axis=0)
 Y3=np.append( Y3, np.zeros(50),axis=0)
 
-#X is the facenet prediction value. X and Y must align.
+
 X=X0
 X=np.append(X,X1,axis=0)
 X=np.append(X,X2,axis=0)
@@ -140,20 +144,78 @@ for i in [0,600,1200,1800,2400]:
     X=np.append(X,X12[i:i+10],axis=0)
     X=np.append(X,X13[i:i+10],axis=0)
 
-#Spliting to test/train sets
+
 X_train,X_test,Y_train0,Y_test0,Y_train1,Y_test1,Y_train2,Y_test2,Y_train3,Y_test3 = train_test_split(X,Y0,Y1,Y2,Y3,test_size = 0.1)
 
-#Create Model
+'''
+a=np.array([[2,3,5,7],[1,4,8,9]])
+print(a.reshape(a.shape[0],2,2))
+print(np.hsplit(a,2))
+raise
+'''
 def createModel():
-    #Facenet output is 128 array. Serves as input to the network
+    '''
+    inputShape=(16,) #128/8
+    
+    inputs0      = Input(shape=inputShape)
+    inputs1      = Input(shape=inputShape)
+    inputs2      = Input(shape=inputShape)
+    inputs3      = Input(shape=inputShape)
+    inputs4      = Input(shape=inputShape)
+    inputs5      = Input(shape=inputShape)
+    inputs6      = Input(shape=inputShape)
+    inputs7      = Input(shape=inputShape)
+    
+    
+    x0 = Dense(8,activation="relu")(inputs0)
+    x1 = Dense(8,activation="relu")(inputs1)
+    x2 = Dense(8,activation="relu")(inputs2)
+    x3 = Dense(8,activation="relu")(inputs3)
+    x4 = Dense(8,activation="relu")(inputs4)
+    x5 = Dense(8,activation="relu")(inputs5)
+    x6 = Dense(8,activation="relu")(inputs6)
+    x7 = Dense(8,activation="relu")(inputs7)
+    
+    
+    x0=Reshape((16,1))(inputs0)
+    x1=Reshape((16,1))(inputs1)
+    x2=Reshape((16,1))(inputs2)
+    x3=Reshape((16,1))(inputs3)
+    x4=Reshape((16,1))(inputs4)
+    x5=Reshape((16,1))(inputs5)
+    x6=Reshape((16,1))(inputs6)
+    x7=Reshape((16,1))(inputs7)
+    
+    x0=Conv1D(8,kernel_size=(8,),activation="relu")(x0)
+    x1=Conv1D(8,kernel_size=(8,),activation="relu")(x1)
+    x2=Conv1D(8,kernel_size=(8,),activation="relu")(x2)
+    x3=Conv1D(8,kernel_size=(8,),activation="relu")(x3)
+    x4=Conv1D(8,kernel_size=(8,),activation="relu")(x4)
+    x5=Conv1D(8,kernel_size=(8,),activation="relu")(x5)
+    x6=Conv1D(8,kernel_size=(8,),activation="relu")(x6)
+    x7=Conv1D(8,kernel_size=(8,),activation="relu")(x7)
+    
+    
+    x=concatenate([x0,x1,x2,x3,x4,x5,x6,x7])
+    
+    x = Dense(128,activation="relu")(x)
+    x = Dense(64,activation="relu")(x)
+    #x= Flatten()(x)
+    x = Dense(32,activation="relu")(x)
+    x = Dense(20,activation="relu")(x)
+    '''
+    
     inputShape=(128,)
     inputs      = Input(shape=inputShape)
-    #x=Reshape((128,1))(inputs)
-    x = Dense(128,activation="relu")(inputs)
-    #x=Conv1D(128,kernel_size=(8,),activation="relu",padding="same")(x)
-    #x=Conv1D(64,kernel_size=(4,),activation="relu",padding="same")(x)
+    x=Reshape((128,1))(inputs)
+    #x = Dense(128,activation="relu")(inputs)
+    x = Dense(128,activation="relu")(x)
+    x = Dense(64,activation="relu")(x)
+    x = Dense(32,activation="relu")(x)
+    #x=Conv1D(64,kernel_size=(16,),activation="relu",padding="same")(x)
+    #x=Conv1D(64,kernel_size=(8,),activation="relu",padding="same")(x)
     #x=AveragePooling1D(4)(x)
-    #x = Flatten()(x)
+    x = Flatten()(x)
     x = Dense(64,activation="relu")(x)
     x = Dense(32,activation="relu")(x)
     x = Dense(20,activation="relu")(x)
@@ -162,12 +224,12 @@ def createModel():
     outputs1 = Dense(20,activation="relu")(x)
     outputs2 = Dense(20,activation="relu")(x)
     outputs3 = Dense(20,activation="relu")(x)
-    #Final layers using softmax. This is  multilabel network so outputs0 to 3.
+    
     outputs0 = Dense(2,activation="softmax")(outputs0)
     outputs1 = Dense(2,activation="softmax")(outputs1)
     outputs2 = Dense(2,activation="softmax")(outputs2)
     outputs3 = Dense(2,activation="softmax")(outputs3)
-    #single input, 4 binary outputs.
+    
     model       = Model(inputs=inputs,outputs=[outputs0,outputs1,outputs2,outputs3])       
     #model       = Model(inputs=[inputs0,inputs1,inputs2,inputs3,inputs4,inputs5,inputs6,inputs7],outputs=outputs)       
     model.compile(loss='categorical_crossentropy', 
@@ -179,7 +241,7 @@ def createModel():
 model=createModel()
 model.summary()
 modelname="facenet_network"
-#USe the modelname when loading the model
+model.save(modelname + "_model.hdf5")
 
 def lrSchedule(epoch):
     lr  = 5e-3
@@ -225,16 +287,25 @@ callbacks_list  = [checkpoint,csv_logger,LRScheduler]
 
 # .............................................................................
 
-#Rename the datasets
+
+#Section 7: Training autodecoder. 140 epoch. 
+#Learning rate is set higher as it requires more time to converge.
+# Fit the model
+# This is where the training starts
 trDat=X_train
 tsDat=X_test
 
-#MNultiple outputs
+
+#trLbl=Y_train
 trLbl=[Y_train0,Y_train1,Y_train2,Y_train3]
        
+#tsLbl=Y_test
+#print(trLbl)
+#print(tsLbl)
 tsLbl=[Y_test0,Y_test1,Y_test2,Y_test3]
+#trLbl=np.hsplit(trLbl,3)
+#tsLbl=np.hsplit(tsLbl,3)
 
-#Change output to categorical output or there will be error.
 trLbl[0]       = to_categorical(trLbl[0])
 tsLbl[0]       = to_categorical(tsLbl[0])
 trLbl[1]       = to_categorical(trLbl[1])
@@ -245,11 +316,11 @@ trLbl[3]       = to_categorical(trLbl[3])
 tsLbl[3]       = to_categorical(tsLbl[3])
 
 
-#Train and save the model. Use it in webcam_cv3_facenet3.py
+#2.5 Scaling. 500ohm is the maximum resistance value possible. Change to float type
 model.fit(trDat, 
             trLbl, 
             validation_data=(tsDat, tsLbl), 
-            epochs=8, 
+            epochs=10, 
             batch_size=1,
             callbacks=callbacks_list)
 model.save_weights(modelname + ".hdf5")
