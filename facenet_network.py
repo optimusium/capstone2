@@ -209,26 +209,31 @@ def createModel():
     inputs      = Input(shape=inputShape)
     x=Reshape((128,1))(inputs)
     #x = Dense(128,activation="relu")(inputs)
-    x = Dense(128,activation="relu")(x)
-    x = Dense(64,activation="relu")(x)
-    x = Dense(32,activation="relu")(x)
+    x = Dense(64,activation="relu", kernel_initializer='he_normal')(x)
+    x = Dense(64,activation="relu", kernel_initializer='he_normal')(x)
+    #x = Dense(32,activation="relu")(x)
     #x=Conv1D(64,kernel_size=(16,),activation="relu",padding="same")(x)
     #x=Conv1D(64,kernel_size=(8,),activation="relu",padding="same")(x)
     #x=AveragePooling1D(4)(x)
     x = Flatten()(x)
-    x = Dense(64,activation="relu")(x)
-    x = Dense(32,activation="relu")(x)
-    x = Dense(20,activation="relu")(x)
+    x = Dense(64,activation="relu", kernel_initializer='he_normal')(x)
+    x = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
+    #x = Dense(20,activation="relu")(x)
+    outputs0 = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
+    outputs1 = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
+    outputs2 = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
+    outputs3 = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
 
-    outputs0 = Dense(20,activation="relu")(x)
-    outputs1 = Dense(20,activation="relu")(x)
-    outputs2 = Dense(20,activation="relu")(x)
-    outputs3 = Dense(20,activation="relu")(x)
+    outputs0 = Dense(16,activation="relu", kernel_initializer='he_normal')(outputs0)
+    outputs1 = Dense(16,activation="relu", kernel_initializer='he_normal')(outputs1)
+    outputs2 = Dense(16,activation="relu", kernel_initializer='he_normal')(outputs2)
+    outputs3 = Dense(16,activation="relu", kernel_initializer='he_normal')(outputs3)
+
     
-    outputs0 = Dense(2,activation="softmax")(outputs0)
-    outputs1 = Dense(2,activation="softmax")(outputs1)
-    outputs2 = Dense(2,activation="softmax")(outputs2)
-    outputs3 = Dense(2,activation="softmax")(outputs3)
+    outputs0 = Dense(2,activation="softmax", kernel_initializer='he_normal')(outputs0)
+    outputs1 = Dense(2,activation="softmax", kernel_initializer='he_normal')(outputs1)
+    outputs2 = Dense(2,activation="softmax", kernel_initializer='he_normal')(outputs2)
+    outputs3 = Dense(2,activation="softmax", kernel_initializer='he_normal')(outputs3)
     
     model       = Model(inputs=inputs,outputs=[outputs0,outputs1,outputs2,outputs3])       
     #model       = Model(inputs=[inputs0,inputs1,inputs2,inputs3,inputs4,inputs5,inputs6,inputs7],outputs=outputs)       
@@ -320,14 +325,21 @@ tsLbl[3]       = to_categorical(tsLbl[3])
 model.fit(trDat, 
             trLbl, 
             validation_data=(tsDat, tsLbl), 
-            epochs=10, 
+            epochs=5, 
             batch_size=1,
             callbacks=callbacks_list)
 model.save_weights(modelname + ".hdf5")
 
-'''
-prediction=model.predict(X_test)
 
-CM=confusion_matrix(tsLbl,prediction)
-print(CM)
-'''
+prediction=model.predict(X_test)
+#print(prediction)
+#print(prediction[0])
+for i in range(4):
+    pred=np.argmax(prediction[i],axis=1)
+    #print (pred)
+    #print(pred.shape)
+    #print(pred.shape)
+    
+    CM=confusion_matrix(eval("Y_test%i" % i),pred)
+    print(CM)
+  

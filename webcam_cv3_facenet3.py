@@ -165,6 +165,34 @@ model5=pickle.load(open(filename,'rb'))
 filename="svm3.sav"
 model6=pickle.load(open(filename,'rb'))
 
+filename="LR0.sav"
+model7=pickle.load(open(filename,'rb'))
+filename="LR1.sav"
+model8=pickle.load(open(filename,'rb'))
+filename="LR2.sav"
+model9=pickle.load(open(filename,'rb'))
+filename="LR3.sav"
+model10=pickle.load(open(filename,'rb'))
+
+filename="RF0.sav"
+model11=pickle.load(open(filename,'rb'))
+filename="RF1.sav"
+model12=pickle.load(open(filename,'rb'))
+filename="RF2.sav"
+model13=pickle.load(open(filename,'rb'))
+filename="RF3.sav"
+model14=pickle.load(open(filename,'rb'))
+
+filename="voting0.sav"
+model15=pickle.load(open(filename,'rb'))
+filename="voting1.sav"
+model16=pickle.load(open(filename,'rb'))
+filename="voting2.sav"
+model17=pickle.load(open(filename,'rb'))
+filename="voting3.sav"
+model18=pickle.load(open(filename,'rb'))
+
+
 cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 log.basicConfig(filename='webcam.log',level=log.INFO)
@@ -563,11 +591,46 @@ while True:
         result3=model4.predict(img2_representation)
         result4=model5.predict(img2_representation)
         result5=model6.predict(img2_representation)
+        
+        result6=model7.predict(img2_representation)
+        result7=model8.predict(img2_representation)
+        result8=model9.predict(img2_representation)
+        result9=model10.predict(img2_representation)
+        
+        result10=model11.predict(img2_representation)
+        result11=model12.predict(img2_representation)
+        result12=model13.predict(img2_representation)
+        result13=model14.predict(img2_representation)
+
+        result14=model15.predict(img2_representation)
+        result15=model16.predict(img2_representation)
+        result16=model17.predict(img2_representation)
+        result17=model18.predict(img2_representation)
+        
         print(img2_representation.shape)
+        print("svm")
         print("aujunleng",result2)
         print("boonping",result3)
         print("yeongshin",result4)
         print("francis",result5)
+        
+        print("lr")
+        print("aujunleng",result6)
+        print("boonping",result7)
+        print("yeongshin",result8)
+        print("francis",result9)
+
+        print("rf")
+        print("aujunleng",result10)
+        print("boonping",result11)
+        print("yeongshin",result12)
+        print("francis",result13)
+
+        print("voting")
+        print("aujunleng",result14)
+        print("boonping",result15)
+        print("yeongshin",result16)
+        print("francis",result17)
         
         '''
         cosine = findCosineDistance(img1_representation, img2_representation)
