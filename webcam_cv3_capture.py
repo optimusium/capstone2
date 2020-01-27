@@ -30,8 +30,6 @@ def grayplt(img,title=''):
     
     fig,ax = plt.subplots(1)
     ax.set_aspect('equal')
-    
-
 
     # Show the image
     if np.size(img.shape) == 3:
@@ -100,7 +98,6 @@ while True:
         #sleep(0.5)
         
         #raise
-        
 
     if anterior != len(faces):
         anterior = len(faces)

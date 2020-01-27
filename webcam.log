@@ -6740,3 +6740,138 @@ INFO:root:faces: 0 at 2020-01-17 23:19:49.760991
 INFO:root:faces: 1 at 2020-01-17 23:19:52.011115
 INFO:root:faces: 2 at 2020-01-17 23:19:58.581804
 INFO:root:faces: 1 at 2020-01-17 23:20:00.787130
+INFO:root:faces: 1 at 2020-01-20 22:18:18.644827
+WARNING:tensorflow:No training configuration found in save file: the model was *not* compiled. Compile it manually.
+WARNING:tensorflow:No training configuration found in save file: the model was *not* compiled. Compile it manually.
+INFO:root:faces: 1 at 2020-01-20 22:25:24.496781
+INFO:root:faces: 0 at 2020-01-20 22:25:24.663749
+INFO:root:faces: 1 at 2020-01-20 22:25:30.487881
+WARNING:tensorflow:No training configuration found in save file: the model was *not* compiled. Compile it manually.
+INFO:root:faces: 1 at 2020-01-20 22:27:31.069677
+WARNING:tensorflow:No training configuration found in save file: the model was *not* compiled. Compile it manually.
+WARNING:tensorflow:No training configuration found in save file: the model was *not* compiled. Compile it manually.
+INFO:root:faces: 1 at 2020-01-20 22:30:22.348372
+INFO:root:faces: 0 at 2020-01-20 22:31:25.351907
+INFO:root:faces: 1 at 2020-01-20 22:31:26.429896
+INFO:root:faces: 0 at 2020-01-20 22:31:35.040921
+INFO:root:faces: 1 at 2020-01-20 22:31:36.687922
+INFO:root:faces: 0 at 2020-01-20 22:31:37.362953
+INFO:root:faces: 1 at 2020-01-20 22:31:37.682926
+INFO:root:faces: 0 at 2020-01-20 22:31:37.743918
+INFO:root:faces: 1 at 2020-01-20 22:31:48.098924
+INFO:root:faces: 0 at 2020-01-20 22:32:03.277733
+INFO:root:faces: 1 at 2020-01-20 22:32:05.321725
+WARNING:tensorflow:No training configuration found in save file: the model was *not* compiled. Compile it manually.
+INFO:root:faces: 1 at 2020-01-20 22:35:28.670875
+INFO:root:faces: 0 at 2020-01-20 22:35:28.717906
+INFO:root:faces: 1 at 2020-01-20 22:35:30.047390
+INFO:root:faces: 0 at 2020-01-20 22:35:31.315831
+INFO:root:faces: 1 at 2020-01-20 22:35:33.542830
+INFO:root:faces: 0 at 2020-01-20 22:35:33.594877
+INFO:root:faces: 1 at 2020-01-20 22:35:33.901834
+INFO:root:faces: 0 at 2020-01-20 22:35:35.121970
+INFO:root:faces: 1 at 2020-01-20 22:35:38.312188
+INFO:root:faces: 0 at 2020-01-20 22:35:40.662568
+INFO:root:faces: 1 at 2020-01-20 22:35:40.938575
+INFO:root:faces: 0 at 2020-01-20 22:35:40.981568
+INFO:root:faces: 1 at 2020-01-20 22:35:42.154543
+INFO:root:faces: 0 at 2020-01-20 22:35:43.271573
+INFO:root:faces: 1 at 2020-01-20 22:35:47.161713
+INFO:root:faces: 0 at 2020-01-20 22:35:47.209764
+INFO:root:faces: 1 at 2020-01-20 22:35:49.966727
+INFO:root:faces: 0 at 2020-01-20 22:36:05.546062
+INFO:root:faces: 1 at 2020-01-20 22:36:06.666305
+INFO:root:faces: 0 at 2020-01-20 22:36:07.734498
+INFO:root:faces: 1 at 2020-01-20 22:36:10.469465
+INFO:root:faces: 0 at 2020-01-20 22:36:13.353024
+INFO:root:faces: 1 at 2020-01-20 22:36:14.438825
+INFO:root:faces: 0 at 2020-01-20 22:36:26.130280
+INFO:root:faces: 1 at 2020-01-20 22:36:28.997673
+WARNING:tensorflow:No training configuration found in save file: the model was *not* compiled. Compile it manually.
+INFO:root:faces: 1 at 2020-01-20 22:39:18.076996
+INFO:root:faces: 0 at 2020-01-20 22:40:56.552059
+INFO:root:faces: 1 at 2020-01-20 22:40:56.852023
+INFO:root:faces: 0 at 2020-01-20 22:40:56.896059
+INFO:root:faces: 1 at 2020-01-20 22:40:58.605404
+INFO:root:faces: 0 at 2020-01-20 22:41:28.895432
+INFO:root:faces: 1 at 2020-01-20 22:41:30.971437
+INFO:root:faces: 0 at 2020-01-20 22:41:31.942467
+INFO:root:faces: 1 at 2020-01-20 22:41:32.536440
+INFO:root:faces: 0 at 2020-01-20 22:41:32.592467
+INFO:root:faces: 1 at 2020-01-20 22:41:32.933434
+INFO:root:faces: 0 at 2020-01-20 22:41:32.992468
+INFO:root:faces: 1 at 2020-01-20 22:41:33.674432
+INFO:root:faces: 0 at 2020-01-20 22:41:35.952468
+INFO:root:faces: 1 at 2020-01-20 22:41:37.325438
+INFO:root:faces: 0 at 2020-01-20 22:41:41.707471
+INFO:root:faces: 1 at 2020-01-20 22:41:44.725443
+INFO:root:faces: 0 at 2020-01-20 22:42:01.673001
+INFO:root:faces: 1 at 2020-01-20 22:42:02.273970
+INFO:root:faces: 0 at 2020-01-20 22:42:02.328971
+INFO:root:faces: 1 at 2020-01-20 22:42:02.656003
+INFO:root:faces: 0 at 2020-01-20 22:42:02.713001
+INFO:root:faces: 1 at 2020-01-20 22:42:05.286457
+INFO:root:faces: 2 at 2020-01-20 22:42:12.656537
+INFO:root:faces: 0 at 2020-01-20 22:42:12.712534
+INFO:root:faces: 1 at 2020-01-20 22:42:13.410570
+INFO:root:faces: 0 at 2020-01-20 22:42:15.071215
+INFO:root:faces: 1 at 2020-01-20 22:42:19.836294
+INFO:root:faces: 0 at 2020-01-20 22:42:19.883295
+INFO:root:faces: 1 at 2020-01-20 22:42:20.281283
+INFO:root:faces: 0 at 2020-01-20 22:42:20.338283
+INFO:root:faces: 1 at 2020-01-20 22:42:23.195285
+INFO:root:faces: 0 at 2020-01-20 22:42:55.760035
+INFO:root:faces: 1 at 2020-01-20 22:42:57.422396
+INFO:root:faces: 0 at 2020-01-20 22:42:57.481367
+INFO:root:faces: 1 at 2020-01-20 22:42:58.454369
+INFO:root:faces: 0 at 2020-01-20 22:42:58.519410
+INFO:root:faces: 1 at 2020-01-20 22:42:59.357367
+INFO:root:faces: 0 at 2020-01-20 22:43:00.957764
+INFO:root:faces: 1 at 2020-01-20 22:43:01.772819
+INFO:root:faces: 0 at 2020-01-20 22:43:02.444766
+INFO:root:faces: 1 at 2020-01-20 22:43:03.032801
+INFO:root:faces: 0 at 2020-01-20 22:43:06.340800
+INFO:root:faces: 1 at 2020-01-20 22:43:07.207772
+INFO:root:faces: 0 at 2020-01-20 22:43:07.271764
+INFO:root:faces: 1 at 2020-01-20 22:43:08.235772
+INFO:root:faces: 0 at 2020-01-20 22:43:08.297774
+INFO:root:faces: 1 at 2020-01-20 22:43:08.919769
+INFO:root:faces: 2 at 2020-01-20 22:43:09.749302
+INFO:root:faces: 0 at 2020-01-20 22:43:09.804329
+INFO:root:faces: 1 at 2020-01-20 22:43:10.651336
+INFO:root:faces: 0 at 2020-01-20 22:43:10.708336
+INFO:root:faces: 1 at 2020-01-20 22:43:12.415306
+INFO:root:faces: 0 at 2020-01-20 22:43:12.823298
+INFO:root:faces: 1 at 2020-01-20 22:43:13.339309
+INFO:root:faces: 0 at 2020-01-20 22:43:13.811339
+INFO:root:faces: 1 at 2020-01-20 22:43:14.559337
+INFO:root:faces: 0 at 2020-01-20 22:43:14.622339
+INFO:root:faces: 1 at 2020-01-20 22:43:15.508304
+INFO:root:faces: 0 at 2020-01-20 22:43:20.416331
+INFO:root:faces: 1 at 2020-01-20 22:43:20.701337
+INFO:root:faces: 0 at 2020-01-20 22:43:20.759299
+INFO:root:faces: 2 at 2020-01-20 22:43:21.432302
+INFO:root:faces: 1 at 2020-01-20 22:43:21.864314
+WARNING:tensorflow:From C:\Users\boonping\anaconda3\envs\ml1p13\lib\site-packages\tensorflow\python\ops\math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+WARNING:tensorflow:Can save best model only with val_acc available, skipping.
+INFO:root:faces: 1 at 2020-01-22 00:07:24.189114
+INFO:root:faces: 0 at 2020-01-22 00:08:42.074642
+INFO:root:faces: 1 at 2020-01-22 00:08:42.595647
+INFO:root:faces: 0 at 2020-01-22 00:08:51.564693
+INFO:root:faces: 1 at 2020-01-22 00:08:54.879700
+INFO:root:faces: 0 at 2020-01-22 00:09:50.912591
+INFO:root:faces: 1 at 2020-01-22 00:09:51.530634
+INFO:root:faces: 0 at 2020-01-22 00:09:51.590586
+INFO:root:faces: 1 at 2020-01-22 00:09:52.211588
+INFO:root:faces: 0 at 2020-01-22 00:09:54.615587

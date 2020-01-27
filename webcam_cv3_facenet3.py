@@ -43,6 +43,9 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.decomposition import PCA
 from sklearn.metrics import confusion_matrix
 
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+
 from mtcnn import MTCNN
 detector = MTCNN()
 
@@ -174,13 +177,13 @@ model9=pickle.load(open(filename,'rb'))
 filename="LR3.sav"
 model10=pickle.load(open(filename,'rb'))
 
-filename="RF0.sav"
+filename="KNN0.sav"
 model11=pickle.load(open(filename,'rb'))
-filename="RF1.sav"
+filename="KNN1.sav"
 model12=pickle.load(open(filename,'rb'))
-filename="RF2.sav"
+filename="KNN2.sav"
 model13=pickle.load(open(filename,'rb'))
-filename="RF3.sav"
+filename="KNN3.sav"
 model14=pickle.load(open(filename,'rb'))
 
 filename="voting0.sav"
@@ -295,6 +298,24 @@ while True:
         resized=resized[ bounding_box[1]:bounding_box[1]+bounding_box[3] , bounding_box[0]:bounding_box[0]+bounding_box[2] ]
         #grayplt(image/255)
         resized = cv2.resize(resized,(160, 160), interpolation = cv2.INTER_CUBIC)
+        grayplt(resized/255)
+        result = detector.detect_faces(resized)
+        print(result)  
+        if result==[]: continue
+        
+        keypoints = result[0]['keypoints']
+
+        #left_eye=image[keypoints['left_eye'][1]-20:keypoints['left_eye'][1]+20, keypoints['left_eye'][0]-20:keypoints['left_eye'][0]+20]
+        #grayplt(left_eye/255)
+        new_bound=min(keypoints['left_eye'][1],keypoints['right_eye'][1])/3
+        new_bound=int(new_bound)
+        new_bound1=(160-max(keypoints['mouth_left'][1],keypoints['mouth_right'][1]))/3
+        new_bound1=int(new_bound1)
+        new_bound2=keypoints['left_eye'][0]/4
+        new_bound2=int(new_bound2)
+        new_bound3=(160-keypoints['right_eye'][0])/4
+        new_bound3=int(new_bound3)
+        resized = cv2.resize(resized[new_bound:160-new_bound1,new_bound2:160-new_bound3],(160, 160), interpolation = cv2.INTER_CUBIC)
         
         
         img_temp=resized/255
@@ -620,7 +641,7 @@ while True:
         print("yeongshin",result8)
         print("francis",result9)
 
-        print("rf")
+        print("knn")
         print("aujunleng",result10)
         print("boonping",result11)
         print("yeongshin",result12)

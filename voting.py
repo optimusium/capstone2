@@ -51,6 +51,10 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import confusion_matrix
 
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.neighbors import KNeighborsClassifier
+
+from sklearn.model_selection import train_test_split
+
 '''
 model = load_model('facenet/facenet_keras.h5')
 model.summary()
@@ -184,18 +188,18 @@ model9=pickle.load(open(filename,'rb'))
 filename="LR3.sav"
 model10=pickle.load(open(filename,'rb'))
 
-filename="RF0.sav"
+filename="KNN0.sav"
 model11=pickle.load(open(filename,'rb'))
-filename="RF1.sav"
+filename="KNN1.sav"
 model12=pickle.load(open(filename,'rb'))
-filename="RF2.sav"
+filename="KNN2.sav"
 model13=pickle.load(open(filename,'rb'))
-filename="RF3.sav"
+filename="KNN3.sav"
 model14=pickle.load(open(filename,'rb'))
 
 
 
-eclf1 = VotingClassifier(estimators=[ ('svm', model3), ('lr', model7), ('rf', model11)], voting='hard')
+eclf1 = VotingClassifier(estimators=[ ('svm', model3), ('lr', model7), ('knn', model11)], voting='soft', weights=[1,1,2])
 eclf1 .fit(X_train,Y_train0)
 filename="voting0.sav"
 pickle.dump(eclf1,open(filename,'wb'))
@@ -204,7 +208,7 @@ prediction=eclf1.predict(X_test)
 CM=confusion_matrix(Y_test0,prediction)
 print(CM)
 
-eclf2 = VotingClassifier(estimators=[ ('svm', model4), ('lr', model8), ('rf', model12)], voting='hard')
+eclf2 = VotingClassifier(estimators=[ ('svm', model4), ('lr', model8), ('knn', model12)], voting='soft', weights=[1,1,2])
 eclf2 .fit(X_train,Y_train1)
 filename="voting1.sav"
 pickle.dump(eclf2,open(filename,'wb'))
@@ -213,7 +217,7 @@ prediction=eclf2.predict(X_test)
 CM=confusion_matrix(Y_test1,prediction)
 print(CM)
 
-eclf3 = VotingClassifier(estimators=[ ('svm', model5), ('lr', model9), ('rf', model13)], voting='hard')
+eclf3 = VotingClassifier(estimators=[ ('svm', model5), ('lr', model9), ('knn', model13)], voting='soft', weights=[1,1,2])
 eclf3 .fit(X_train,Y_train2)
 filename="voting2.sav"
 pickle.dump(eclf3,open(filename,'wb'))
@@ -222,7 +226,7 @@ prediction=eclf3.predict(X_test)
 CM=confusion_matrix(Y_test2,prediction)
 print(CM)
 
-eclf4 = VotingClassifier(estimators=[ ('svm', model6), ('lr', model10), ('rf', model14)], voting='hard')
+eclf4 = VotingClassifier(estimators=[ ('svm', model6), ('lr', model10), ('knn', model14)], voting='soft', weights=[1,1,2])
 eclf4 .fit(X_train,Y_train3)
 filename="voting3.sav"
 pickle.dump(eclf4,open(filename,'wb'))

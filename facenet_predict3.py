@@ -13,6 +13,12 @@ from time import sleep
 import numpy as np
 from matplotlib import pyplot as plt
 
+'''
+from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import img_to_array
+from keras.preprocessing.image import load_img
+'''
+
 from tensorflow.keras.callbacks import ModelCheckpoint,CSVLogger,LearningRateScheduler
 from tensorflow.keras.models import Model
 from tensorflow.keras.models import load_model
@@ -26,6 +32,7 @@ from tensorflow.keras.layers import AveragePooling2D,MaxPooling2D,UpSampling2D
 from tensorflow.keras.layers import add,Lambda
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.utils import to_categorical,plot_model
+#from tensorflow.keras.datasets import cifar10
 from tensorflow.keras import optimizers
 from tensorflow.keras import backend
 from tensorflow.keras.models import model_from_json
@@ -34,7 +41,8 @@ import IPython
 from scipy import ndimage
 from scipy.ndimage.interpolation import shift
 from numpy import savetxt,loadtxt
-
+#savetxt('data.csv', data, delimiter=',')
+#data = loadtxt('data.csv', delimiter=',')
 import gc
 from skimage.transform import resize
 
@@ -46,9 +54,19 @@ def moving_average(a, n=3) :
     return ret[n - 1:] / n
 
 def grayplt(img,title=''):
-  
+    '''
+    plt.axis('off')
+    if np.size(img.shape) == 3:
+        plt.imshow(img[:,:,0],cmap='gray',vmin=0,vmax=1)
+    else:
+        plt.imshow(img,cmap='gray',vmin=0,vmax=1)
+    plt.title(title, fontproperties=prop)
+    '''
+    
     fig,ax = plt.subplots(1)
     ax.set_aspect('equal')
+    
+
 
     # Show the image
     if np.size(img.shape) == 3:
@@ -67,50 +85,28 @@ def adjust_gamma(image, gamma=1.0):
 	# apply gamma correction using the lookup table
 	return cv2.LUT(image, table)    
 
-#Establish MTCNN detector
+
 detector = MTCNN()
-#Image List
 images = ['frame1.jpg','frame5.jpg','frame3.jpg','frame4.jpg','frame2.jpg','frame6.jpg','frame7.jpg','frame8.jpg','frame9.jpg','frame10.jpg','frame11.jpg','frame12.jpg','frame13.jpg','frame14.jpg','frame15.jpg']
-
-#Load Facenet Model
-model = load_model('facenet/facenet_keras.h5')
-model.summary()
-print(model.inputs)
-print(model.outputs)
-
-#Load Facenet Weight
-model.load_weights("facenet/facenet_keras_weights.h5")
-
-#For pre-processed images later
-imags=[]
-
-#Counters
-jjjj=-1
-jjj=-1
-#For each image
-for img in images: 
-    #Increment of counter
-    jjjj+=1
-    #Will be performing 6 pre-processing, hence another counter increment after 6 times.
-    if jjjj%6==0:
-        jjj+=1
-    #Raw Image
-    image = cv2.cvtColor(cv2.imread(img), cv2.COLOR_BGR2RGB)
+'''
+for imagee in images:
+    image = cv2.cvtColor(cv2.imread(imagee), cv2.COLOR_BGR2RGB)
     
-    #MTCNN face detection
     result = detector.detect_faces(image)
     print(result)
-    if result==[]: continue
     
-    # Bounding Box defined by MTCNN
+    # Result is an array with all the bounding boxes detected. We know that for 'ivan.jpg' there is only one.
     bounding_box = result[0]['box']
     
+    
+    cv2.rectangle(image,
+                  (bounding_box[0], bounding_box[1]),
+                  (bounding_box[0]+bounding_box[2], bounding_box[1] + bounding_box[3]),
+                  (0,155,255),
+                  2)
     grayplt(image/255)
-    #Image is reonstructed based on MTCNN bounding box
     image=image[ bounding_box[1]:bounding_box[1]+bounding_box[3] , bounding_box[0]:bounding_box[0]+bounding_box[2] ]
     #grayplt(image/255)
-
-    #Resized image into 160,160 for facenet input
     image = cv2.resize(image,(160, 160), interpolation = cv2.INTER_CUBIC)
     result = detector.detect_faces(image)
     print(result)    
@@ -118,27 +114,108 @@ for img in images:
     keypoints = result[0]['keypoints']
     left_eye=image[keypoints['left_eye'][1]-20:keypoints['left_eye'][1]+20, keypoints['left_eye'][0]-20:keypoints['left_eye'][0]+20]
     grayplt(left_eye/255)
-       
+    
+    cv2.circle(image,(keypoints['left_eye']), 2, (0,155,255), 2)
+    cv2.circle(image,(keypoints['right_eye']), 2, (0,155,255), 2)
+    cv2.circle(image,(keypoints['nose']), 2, (0,155,255), 2)
+    cv2.circle(image,(keypoints['mouth_left']), 2, (0,155,255), 2)
+    cv2.circle(image,(keypoints['mouth_right']), 2, (0,155,255), 2)
+    
+    cv2.imwrite("ivan_drawn.jpg", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+    grayplt(cv2.cvtColor(image, cv2.COLOR_RGB2BGR)/255)
+    print(keypoints['left_eye'][0])
+#raise
+'''
+'''
+model = load_model('facenet/facenet_keras.h5')
+model.summary()
+print(model.inputs)
+print(model.outputs)
+
+model.load_weights("facenet/facenet_keras_weights.h5")
+'''
+
+#images = ['frame2.jpg']
+#p2 = 'image2/frame3.jpg'
+#a=np.array([23,12,15])
+#print( a[a<16].size )
+#raise
+
+#imags=np.array([])
+imags=[]
+
+jjjj=-1
+jjj=-1
+for img in images: #def preprocess_image(img):
+    jjjj+=1
+    if jjjj%6==0:
+        jjj+=1
+    #imag=cv2.imread(img)
+    image = cv2.cvtColor(cv2.imread(img), cv2.COLOR_BGR2RGB)
+    #image = ndimage.rotate(image, 30, mode='nearest')
+    
+    result = detector.detect_faces(image)
+    print(result)
+    
+    # Result is an array with all the bounding boxes detected. We know that for 'ivan.jpg' there is only one.
+    bounding_box = result[0]['box']
+    
+    '''
+    cv2.rectangle(image,
+                  (bounding_box[0], bounding_box[1]),
+                  (bounding_box[0]+bounding_box[2], bounding_box[1] + bounding_box[3]),
+                  (0,155,255),
+                  2)
+    '''
+    grayplt(image/255)
+    image=image[ bounding_box[1]:bounding_box[1]+bounding_box[3] , bounding_box[0]:bounding_box[0]+bounding_box[2] ]
+    #grayplt(image/255)
+    image = cv2.resize(image,(160, 160), interpolation = cv2.INTER_CUBIC)
+    result = detector.detect_faces(image)
+    print(result)    
+    
+    keypoints = result[0]['keypoints']
+    #left_eye=image[keypoints['left_eye'][1]-20:keypoints['left_eye'][1]+20, keypoints['left_eye'][0]-20:keypoints['left_eye'][0]+20]
+    #grayplt(left_eye/255)
+    new_bound=min(keypoints['left_eye'][1],keypoints['right_eye'][1])/3
+    new_bound=int(new_bound)
+    new_bound1=(160-max(keypoints['mouth_left'][1],keypoints['mouth_right'][1]))/3
+    new_bound1=int(new_bound1)
+    new_bound2=keypoints['left_eye'][0]/4
+    new_bound2=int(new_bound2)
+    new_bound3=(160-keypoints['right_eye'][0])/4
+    new_bound3=int(new_bound3)
+    image = cv2.resize(image[new_bound:160-new_bound1,new_bound2:160-new_bound3],(160, 160), interpolation = cv2.INTER_CUBIC)
+    grayplt(image/255)
+    #raise
+
+    '''
+    cv2.circle(image,(keypoints['left_eye']), 2, (0,155,255), 2)
+    cv2.circle(image,(keypoints['right_eye']), 2, (0,155,255), 2)
+    cv2.circle(image,(keypoints['nose']), 2, (0,155,255), 2)
+    cv2.circle(image,(keypoints['mouth_left']), 2, (0,155,255), 2)
+    cv2.circle(image,(keypoints['mouth_right']), 2, (0,155,255), 2)
+    '''
+    
     cv2.imwrite("ivan_drawn.jpg", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
     grayplt(cv2.cvtColor(image, cv2.COLOR_RGB2BGR)/255)
     print(keypoints['left_eye'][0])
     
-    #Final Image after cropping using MTCNN
+    
     imag = cv2.resize( cv2.cvtColor(image, cv2.COLOR_RGB2BGR),(160, 160), interpolation = cv2.INTER_CUBIC)
     grayplt(imag/255)
-
-    #Preprocessing 0: Rebounded MTCNN image. Append image into preprocessed image list
     if imags==[] : #imags.shape[0]==0:
         #print("999")
         imags=[imag]
-    else:        
+    else:
+        
         imags.append(imag)
-
-    #Preprocessing 1: Cropped image is transformed into HSV (Darken brightest, darkest V but strengthening weak V pixel)
+        #imags=np.append(imags,imag,axis=0)
+        #print("998",imag.shape)
+        #print(imags.shape)
+    #imag=adjust_gamma(imag, gamma=0.8)
     hsv = cv2.cvtColor(imag, cv2.COLOR_BGR2HSV)    
     h, s, v = cv2.split(hsv)
-    #Preprocessing using V component. Darken brightest pixel.
-    #Strengthen pixel with V in range [20,120]
     v[v<20]=0
     v[(v>20)&(v<120)]=v[(v>20)&(v<120)]*1.08
     v[(v>180)&(v<250)]=v[(v>180)&(v<250)]*0.92
@@ -150,10 +227,7 @@ for img in images:
     #imags=np.append(imags,imag2,axis=0)
     imags.append(imag2)
 
-    #Preprocessing 2: Cropped image is transformed into HSV (Darkening using V)
     hsv = cv2.cvtColor(imag, cv2.COLOR_BGR2HSV)    
-    #Preprocessing using V component. Darken brightest pixel.
-    #Darken pixel with V in range [20,120]
     h, s, v = cv2.split(hsv)
     v[v<20]=0
     v[(v>20)&(v<120)]=v[(v>20)&(v<120)]*0.92
@@ -166,7 +240,6 @@ for img in images:
     #imags=np.append(imags,imag2,axis=0)
     imags.append(imag2)
 
-    #Preprocessing 3: Cropped image is transformed into BGR (Re-processing R and G where these are main human skin color components)
     b, g, r = cv2.split(imag)
     r[r<15]=0
     r[(r>15)&(r<100)]=r[(r>15)&(r<100)]*1.1
@@ -184,37 +257,48 @@ for img in images:
     #imags=np.append(imags,imag2,axis=0)
     imags.append(imag2)
     
-    #Preprocessing 4: Cropped image is transformed using gamma 1.2
     imag2=adjust_gamma(imag, gamma=1.2)
     imags.append(imag2)
-    #Preprocessing 5: Cropped image is transformed using gamma 0.8
     imag2=adjust_gamma(imag, gamma=0.8)
     imags.append(imag2)
     
-#delete existing file consits of facenet prediction    
+    '''
+    result = detector.detect_faces(imag)
+    print(result)    
+    
+    keypoints = result[0]['keypoints']
+    left_eye=imag[keypoints['left_eye'][1]-20:keypoints['left_eye'][1]+20, keypoints['left_eye'][0]-20:keypoints['left_eye'][0]+20]
+    hsv = cv2.cvtColor(left_eye, cv2.COLOR_BGR2HSV)    
+    h, s, v = cv2.split(hsv)
+    v[v<20]=0
+    v[(v>20)&(v<120)]=v[(v>20)&(v<120)]*0.20
+    v[(v>180)&(v<250)]=v[(v>180)&(v<250)]*0.25
+    v[v>250]=250
+    hsv = cv2.merge((h, s, v))
+    left_eye = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+    grayplt(left_eye/255)
+    grayplt(imag/255)
+    imags.append(imag)
+    raise
+    '''
+     
+#imags=imags.reshape(int(imags.shape[0]/160),160,160,3)
+#for imag in imags:
+#    grayplt(imag/255)
+#raise
+    
+    
 os.popen("del *merged_representation*")    
     
-#counters    
 jjj=-1
 jjjj=-1
-#for each pre-processed images
-for imag in imags: 
-    #increment of counter
+for imag in imags: #def preprocess_image(img):
     jjjj+=1
-    #Will be performing 6 pre-processing, hence another counter increment after 6 times.
     if jjjj%6==0:
         jjj+=1
-
-    #resize images
+    #imag=cv2.imread(img)
     imag = cv2.resize(imag,(160, 160), interpolation = cv2.INTER_CUBIC)
     
-    #Analyzing face color, to get exact pixels with face color. 
-    #After getting these pixels, change it to white. Non face color in black.
-    #Then using flooding method, fill the black pixels within white contour.
-    #Then bitwise AND with MTCNN pre-processed images.
-    #This will remove obvious nackgrounds.
-
-    #HSV preprocessing. Darken bright pixels to prevent over-exposure
     hsv = cv2.cvtColor(imag, cv2.COLOR_BGR2HSV)    
     h, s, v = cv2.split(hsv)
     
@@ -233,17 +317,35 @@ for imag in imags:
     #print (hsv[30][80])
     #print (hsv[80][30])
     
+    # define range of blue color in HSV
     res=cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+    #res=hsv
     
+    
+    '''
+    if 1:
+        lower_blue= np.array([0,10,45])
+        upper_blue = np.array([40,110,255])
+
+        
+            
+        # Threshold the HSV image to get only blue colors
+        mask = cv2.inRange(hsv, lower_blue, upper_blue)
+            
+        # Bitwise-AND mask and original image
+        res = cv2.bitwise_and(imag,imag, mask= mask)
+    '''
+    
+    
+    #res = cv2.resize(res,(160, 160), interpolation = cv2.INTER_CUBIC)
+    #imgray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
+    #hist_item = cv2.calcHist([imgray],[0],None,[256],[0,256])
+    #plt.plot(hist_item,color = 'b')
     grayplt(res/255)
     
-    #Getting pixels with face color. White is pixel with face color features while zero is non-face pixels.
-    #Face, should have a significant contrast in H 
-    #Face, should have low S
-    #Face may be over-exposured, so V had been pre-processed.
-    #Face color is having significant G, R but less B.
     h, s, v = cv2.split(hsv)
     print("h")
+    #l=cv2.equalizeHist(l)
     l=cv2.resize(h,(160, 160), interpolation = cv2.INTER_CUBIC)
     l=l[0:160,0:120]
     l[l>75]=179
@@ -269,9 +371,13 @@ for imag in imags:
         ri[ri==179]=255
     ri[ri==0]=100
     
+    #grayplt(ri/180)
+    
     com=np.append(l[0:160,0:120],ri[0:160,80:120],axis=1)
     grayplt(com/255)
     
+    #h[h>20]=180
+    #h[h<=20]=0
     
     #grayplt(h/180)
     print("s")
@@ -295,6 +401,9 @@ for imag in imags:
     b[b<=230]=0      
     grayplt(b/255)
     
+    #grayplt(b/255)
+    #g[g<50]=0
+    #g[g>=50]=255
     print("g")
     g[g<60]=1
     g[g>=60]=254
@@ -303,6 +412,18 @@ for imag in imags:
     grayplt(g/255)
     
     print("r")
+    '''
+    r=np.where((r>=0)&(r<25),0,r)
+    r=np.where((r>=25)&(r<50),25,r)
+    r=np.where((r>=50)&(r<75),50,r)
+    r=np.where((r>=75)&(r<100),75,r)
+    r=np.where((r>=100)&(r<125),100,r)
+    r=np.where((r>=125)&(r<150),125,r)
+    r=np.where((r>=150)&(r<175),150,r)
+    r=np.where((r>=175)&(r<200),175,r)
+    r=np.where((r>=200)&(r<250),200,r)
+    r=np.where((r>=250)&(r<256),255,r)
+    '''
     r[r<40]=1
     r[r>=40]=254
     r[r==1]=255
@@ -314,7 +435,47 @@ for imag in imags:
     fin[fin<0.02]=0
     l=fin[0:160,0:10]
     l[l<0.33]=0
+    
+    '''
+    l1=fin[0:160,10:15]
+    l1[l1<0.25]=0
 
+
+    l2=fin[0:160,150:160]
+    l2[l2<0.33]=0
+
+    l3=fin[0:160,145:150]
+    l3[l3<0.25]=0
+
+    l4=fin[0:25,0:25]
+    l4[l4<0.8]=0
+
+    l5=fin[0:25,135:160]
+    l5[l5<0.8]=0
+
+    l6=fin[0:25,135:160]
+    l6[l6<0.8]=0
+
+    l7=fin[135:160,0:25]
+    l7[l7<0.8]=0
+
+    l7=fin[100:140,140:160]
+    l7[l7<0.8]-=0.15
+
+    l8=fin[100:140,0:20]
+    l8[l8<0.8]-=0.15
+
+    l9=fin[150:160,0:160]
+    l9[l9<0.3]-=0.15
+    l9[l9<0.5]-=0.12
+
+    l10=fin[0:10,0:160]
+    l10[l10<0.3]-=0.15
+    l10[l10<0.5]-=0.12
+    '''
+    
+    #fin[fin<0.6]-=0.1
+    #fin=fin*fin
     fin[(fin>0.2)&(fin<0.3)]+=0.3
     fin[fin>0.3]+=0.3
     fin[fin>0.9]=1
@@ -325,13 +486,15 @@ for imag in imags:
     fin=fin*255
     grayplt( fin/255 )
     
-    #Use a series of maxand min filter to perform flooding on black pixels surrounded by white pixels
+    
     if 1:
         
         im2=fin/255
         im3=np.fliplr(im2)
         im4=np.flipud(im2)
         im5=np.fliplr(im4)
+        #print(im2[im2<0.1].size,160*160*3*0.95)
+        #print(im2[im2>0.1].size,160*160*3*0.95)
         
         for i in range(15):
             im2=ndimage.maximum_filter(im2, size=2)
@@ -350,6 +513,14 @@ for imag in imags:
             im4=ndimage.minimum_filter(im4, size=2)
             im5=ndimage.minimum_filter(im5, size=2)
 
+
+            #im2=scipy.ndimage.gaussian_filter(im2, sigma=1.1)
+            #im2=ndimage.minimum_filter(im2, size=2)
+            #im3=ndimage.minimum_filter(im3, size=2)
+            #im4=ndimage.minimum_filter(im4, size=2)
+            #im5=ndimage.minimum_filter(im5, size=2)
+            #print(im2[im2<0.1].size,160*160*3*0.95)
+            #print(im2[im2>0.1].size,160*160*3*0.95)
         
         im3=np.fliplr(im3)
         im4=np.flipud(im4)
@@ -364,30 +535,31 @@ for imag in imags:
         im2=im2*im3*im4*im5
         print(im2[im2<0.1].size,160*160*3*0.95)
         print(im2[im2>0.1].size,160*160*3*0.95)
-        #At this point im22 represnts face pixel. White should be face pixels/
+
         
         img2 = np.zeros( ( np.array(im2).shape[0], np.array(im2).shape[1], 3 ) )
         img2[:,:,0] = im2 # same value in each channel
         img2[:,:,1] = im2
         img2[:,:,2] = im2
-        #img2 is 3-dimensional im22
         
         im22=img2
         grayplt(im22*imag/255)
         res5=im22*imag
         im22=im22*imag
-        #Both res5 and im22 are BITWISE AND result of img2 and MTCNN pre-processed images. (imag is MTCNN pre-processed images)
-        #Both res5 and im22 are MTCNN images without bvious background.
-
+        #print(res5.shape)\
+        #res5=resize(res5,(160,160))
+        #hsv=cv2.cvtColor(res5, cv2.COLOR_BGR2HSV)
+        #print(hsv.shape)
+        #raise
+        #grayplt(res5/255)
+        
         training=np.array([])
         res=np.expand_dims(im22,axis=0)
-        #Append the final MTCNN pre-processed image without obvious ackground into facenet training list
         training=np.append(training,res)
         #print(res5.shape)
         #raise
     
         iii=0
-        #Re-scaling image (zoom-out)
         for sc in range(140,160,10):
             print("999:",sc)
             #res7 = cv2.resize(res5,(sc, sc), interpolation = cv2.INTER_CUBIC)
@@ -407,13 +579,13 @@ for imag in imags:
             res4=np.concatenate((res3,res7,res3))
             res6=np.concatenate((res2,res4,res2),axis=1)
         
-            #Adding scaled image into facenet training set
+            #training.append(res.tolist())
             training=np.append(training,res6)
             #grayplt(res6/255)
             ##############
             
             
-            #For each scaled image, rotate using different angles.
+            
             for ang in [-45,-30,-15,0,15,30,45]:
                 img = ndimage.rotate(res6, ang, mode='nearest')
                 #print(img.shape)
@@ -422,51 +594,41 @@ for imag in imags:
                 trim2=(img.shape[1]-160)/(2)
                 trim2=int(trim2)
                 res1=img[trim1:trim1+160,trim2:trim2+160]
-                #Append each rotated+scaled image into training set
                 training=np.append(training,res1)    
     
-                #for each rotated+scaled image, perform translation
                 shi=20 #int( 30-(sc-80)/2 )
                 for sh in [-20,0,20]: #range(-shi,shi,10):
                     for sh2 in [-20,0,20]: #range(-shi,shi,10):
                         res9 = np.roll(res1, sh, axis=0)
                         res9 = np.roll(res9, sh2, axis=1)
                         grayplt(res9/255)
-                        #Append each rotated+scaled+translation image into training set
                         training=np.append(training,res9)
                         
             print("shape:",training.shape)
-            #Reshape the training set (since previous append was done pixel by pixel)
             training=training.reshape( int(training.shape[0]/76800),160,160,3)
             
-            #facenet prediction 
             img1_representation = model.predict(training)
-            #save the numpy array which consists of facenet prediction into csv file.
+            #savetxt('img%i_representation_%s_%s.csv' % (jjj,iii,sc), img1_representation, delimiter=',')
             with open('img%i_merged_representation.csv' % (jjj), "ab") as f:
                 savetxt(f, img1_representation, delimiter=',')
             
-            #Free-up training space
             training=np.array([])
             #res5=im2
             #res=np.expand_dims(im2,axis=0)
             training=np.append(training,res)
         iii=1
-        #Scaling (zoom-in)
-        for sc in range(180,230,10):
+        for sc in range(180,250,10):
             
             #res1 = cv2.resize(res5,(sc, sc), interpolation = cv2.INTER_CUBIC)
             res1=resize(res5,(sc,sc))
             sc1=(sc-160)/2
             sc1=int(sc1)
-            #Always scaled back to 160,160
             res1=res1[sc1:sc1+160,sc1:sc1+160]
             print("998",sc)
             grayplt(res1/255)
         
             #training.append(res.tolist())
-            #Append scaled images
             training=np.append(training,res1)
-            #rotation
             for ang in [-45,-30,-15,0,15,30,45]:
                 img = ndimage.rotate(res1, ang, mode='nearest')
                 #print(img.shape)
@@ -478,7 +640,6 @@ for imag in imags:
                 training=np.append(training,res2)    
     
                 shi=30 #int( 30-(sc-80)/2 )
-                #angle
                 for sh in [-20,0,20]: #range(-shi,shi,10):
                     for sh2 in [-20,0,20]: #range(-shi,shi,10):
                         res9 = np.roll(res2, sh, axis=0)
@@ -488,10 +649,8 @@ for imag in imags:
             print("shape:",training.shape)
             training=training.reshape( int(training.shape[0]/76800),160,160,3)
             
-            #facenet prediction
             img1_representation = model.predict(training)
             #savetxt('img%i_representation_%s_%s.csv' % (jjj,iii,sc), img1_representation, delimiter=',')
-            #save prediction by appending to file.
             with open('img%i_merged_representation.csv' % (jjj), "ab") as ff:
                 savetxt(ff, img1_representation, delimiter=',')
             
@@ -501,3 +660,420 @@ for imag in imags:
             training=np.append(training,res)
 
 
+    
+    '''
+    imgray=cv2.equalizeHist(imgray)
+    
+    imgray = np.where(imgray<30,0,imgray)
+    imgray[imgray>250]=255
+    #imgray = np.where(imgray<40 & imgray>20,255,imgray)
+    res = cv2.GaussianBlur(imgray,(3,3),0)
+    imgray=cv2.equalizeHist(imgray)
+    
+    imgray_ori = cv2.GaussianBlur(imgray,(3,3),0)
+    imgray=cv2.equalizeHist(imgray_ori)
+    imgray=cv2.addWeighted(imgray, 0.5, imgray_ori, 0.5, 0, imgray)
+    grayplt(imgray/255)
+    
+      
+    imgray_ori = cv2.GaussianBlur(imgray,(3,3),0)
+    imgray=cv2.equalizeHist(imgray_ori)
+    imgray=cv2.addWeighted(imgray, 0.5, imgray_ori, 0.5, 0, imgray)
+    grayplt(imgray/255)
+    
+    for itime in range(5):      
+        imgray_ori = cv2.GaussianBlur(imgray,(3,3),0)
+        imgray=cv2.equalizeHist(imgray_ori)
+        imgray=cv2.addWeighted(imgray, 0.5, imgray_ori, 0.5, 0, imgray)
+        imgray = np.where(imgray<20,0,imgray)
+        imgray[imgray>250]=255
+        imgray[imgray<30]=0
+    '''    
+
+    #imgray[imgray>30]=255
+    #grayplt(imgray/255)
+    #hist_item = cv2.calcHist([imgray],[0],None,[8],[0,256])
+    #print(hist_item)
+    #plt.plot(hist_item,color = 'b')
+    
+    '''
+    laplacian = cv2.Laplacian(imgray,cv2.CV_32F)
+    laplacian = np.where(laplacian<30,0,laplacian)
+    laplacian = np.where(laplacian>30,255,laplacian)
+    '''
+
+
+
+raise
+
+os.popen("del *merged_representation*")
+jjj=-1
+for img in images: #def preprocess_image(img):
+    jjj+=1
+    imgs =np.array([])
+
+    imag=cv2.imread(img)
+    training=np.array([])
+    #training.append(img.tolist())
+
+    res = cv2.resize(imag,(160, 160), interpolation = cv2.INTER_CUBIC)
+    grayplt(res/255)
+    imgs=res #np.expand_dims(res,axis=0)
+    print(imgs.shape)
+    '''
+    res=adjust_gamma(res, gamma=1.2)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    '''
+    
+    '''
+    res = cv2.resize(imag,(160, 160), interpolation = cv2.INTER_CUBIC)
+    res = cv2.rectangle(res, (0, 110), (160, 160), (0, 0, 0), -1)
+    grayplt(res/255)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    res=adjust_gamma(res, gamma=1.2)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    
+    
+    res = cv2.resize(imag,(160, 160), interpolation = cv2.INTER_CUBIC)
+    res = cv2.rectangle(res, (0, 0), (160, 110), (0, 0, 0), -1)
+    grayplt(res/255)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    res=adjust_gamma(res, gamma=1.2)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    
+    
+    res = cv2.resize(imag,(160, 160), interpolation = cv2.INTER_CUBIC)
+    res = cv2.rectangle(res, (0, 0), (75, 110), (0, 0, 0), -1)
+    grayplt(res/255)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    res=adjust_gamma(res, gamma=1.2)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    
+
+    res = cv2.resize(imag,(160, 160), interpolation = cv2.INTER_CUBIC)
+    res = cv2.rectangle(res, (80, 0), (160, 110), (0, 0, 0), -1)
+    print(res.shape)
+    grayplt(res/255)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    res=adjust_gamma(res, gamma=1.2)
+    imgs=np.append(imgs,res,axis=0) 
+    print(imgs.shape)
+    '''
+    imgs=imgs.reshape(int(imgs.shape[0]/160),160,160,3)
+    print(imgs.shape)
+    
+    
+    #raise
+    
+    #res=resize(imag,(160,160))
+    ##print(res.shape)
+    #raise
+    #im2=res
+    ##############################
+    
+    
+       
+    
+    '''
+    grayplt(res/255)
+    cascPath = "haarcascade_eye_tree_eyeglasses.xml"
+    #cascPath = "haarcascade_mcs_mouth.xml"
+    faceCascade = cv2.CascadeClassifier(cascPath)
+    log.basicConfig(filename='webcam.log',level=log.INFO)
+    gray = cv2.cvtColor(res, cv2.COLOR_RGB2GRAY)
+
+    faces = faceCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30)
+    )
+
+    # Draw a rectangle around the faces
+    for (x, y, w, h) in faces:
+        resized = cv2.resize(res[y:y+h,x:x+w], (160,160), interpolation = cv2.INTER_AREA)
+    grayplt(resized/255)
+    raise
+    '''
+    ##############################   
+        
+    for iii in range(imgs.shape[0]):
+        #print(img1)
+        img_temp=imgs[iii]/255
+        
+        #cv2.imshow('frame', adjusted)
+        img=imgs[iii]
+        print("9981",imgs[iii].shape)
+        grayplt(img/255)
+        #print(img[140][25])
+        #print(img[25][140])
+
+
+        #continue
+        ###############
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        #print(hsv[140][25])
+        #print(hsv[25][140])
+         
+        # define range of blue color in HSV
+        lower_blue= np.array([0,10,45])
+        lower_blue= np.array([0,10,45])
+        upper_blue = np.array([60,180,255])
+        upper_blue = np.array([180,180,254])
+        
+            
+        # Threshold the HSV image to get only blue colors
+        mask = cv2.inRange(hsv, lower_blue, upper_blue)
+            
+        # Bitwise-AND mask and original image
+        res = cv2.bitwise_and(img,img, mask= mask)
+        
+        imgray = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
+        ret, thresh = cv2.threshold(255-imgray, 127, 255, 0)
+        im2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cnt = contours[4]
+        cv2.drawContours(im2, [cnt], 0, (255,255,255), 3)
+        im2=255-im2    
+        img_temp2=np.expand_dims(img_temp,axis=0)
+        #grayplt(img_temp2[0])
+        
+        img=np.expand_dims(img,axis=0)/255
+        res=np.expand_dims(res,axis=0)/255
+        grayplt(im2)
+        im2=im2/255
+        im3=np.fliplr(im2)
+        im4=np.flipud(im2)
+        im5=np.fliplr(im4)
+        #print(im2[im2<0.1].size,160*160*3*0.95)
+        #print(im2[im2>0.1].size,160*160*3*0.95)
+        
+        for i in range(15):
+            im2=ndimage.maximum_filter(im2, size=2)
+            im3=ndimage.maximum_filter(im3, size=2)
+            im4=ndimage.maximum_filter(im4, size=2)
+            im5=ndimage.maximum_filter(im5, size=2)
+            
+            im2=ndimage.maximum_filter(im2, size=2)
+            im3=ndimage.maximum_filter(im3, size=2)
+            im4=ndimage.maximum_filter(im4, size=2)
+            im5=ndimage.maximum_filter(im5, size=2)
+            
+            #im2=scipy.ndimage.gaussian_filter(im2, sigma=1.1)
+            #im2=ndimage.minimum_filter(im2, size=2)
+            #im3=ndimage.minimum_filter(im3, size=2)
+            #im4=ndimage.minimum_filter(im4, size=2)
+            #im5=ndimage.minimum_filter(im5, size=2)
+            #print(im2[im2<0.1].size,160*160*3*0.95)
+            #print(im2[im2>0.1].size,160*160*3*0.95)
+        
+        im3=np.fliplr(im3)
+        im4=np.flipud(im4)
+        im5=np.fliplr(im5)
+        im5=np.flipud(im5)
+        #grayplt(im2)
+        #grayplt(im3)
+        #grayplt(im4)
+        #grayplt(im5)
+        
+        #raise
+        im2=im2*im3*im4*im5
+        print(im2[im2<0.1].size,160*160*3*0.95)
+        print(im2[im2>0.1].size,160*160*3*0.95)
+        
+        img2 = np.zeros( ( np.array(im2).shape[0], np.array(im2).shape[1], 3 ) )
+        img2[:,:,0] = im2 # same value in each channel
+        img2[:,:,1] = im2
+        img2[:,:,2] = im2
+        
+        im22=img2
+        grayplt(im22)
+        #raise
+        print(im22[im22<0.1].size,160*160*3*0.95)
+        print(im22[im22>0.1].size,160*160*3*0.95)
+        #raise
+        if (im22[im22<0.1].size)>160*160*3*0.95:
+            print("skip")
+            continue
+        im22=img2*img_temp
+        print("im22")
+        #grayplt(im22)
+        im2=im22*255
+        #print(im2.shape)
+        
+        res5=im2
+        
+        #grayplt(res5/255)
+        
+    
+        res=np.expand_dims(im2,axis=0)
+        training=np.append(training,res)
+        
+    
+    
+        for sc in range(140,160,10):
+            print("999:",sc)
+            #res7 = cv2.resize(res5,(sc, sc), interpolation = cv2.INTER_CUBIC)
+            res7=resize(res5,(sc,sc))
+            sc1=160-sc
+            sc1/=2
+            sc1=int(sc1)
+            sc2=80-sc1
+            #print(sc1)
+            res1=np.zeros((sc1,sc1,3))
+            res2=np.zeros((160,sc1,3)) #np.concatenate((res1,res1,res1,res1))
+            res3=np.zeros((sc1,sc2*2,3)) #np.concatenate((res1,res1),axis=1)
+            #print(res.shape)
+            #print(res2.shape)
+            #print(res3.shape)  
+            #print(res5.shape) 
+            res4=np.concatenate((res3,res7,res3))
+            res6=np.concatenate((res2,res4,res2),axis=1)
+        
+            #training.append(res.tolist())
+            training=np.append(training,res6)
+            #grayplt(res6/255)
+            ##############
+            
+            
+            
+            for ang in [-45,-30,-15,0,15,30,45]:
+                img = ndimage.rotate(res6, ang, mode='nearest')
+                #print(img.shape)
+                trim1=(img.shape[0]-160)/(2)
+                trim1=int(trim1)
+                trim2=(img.shape[1]-160)/(2)
+                trim2=int(trim2)
+                res1=img[trim1:trim1+160,trim2:trim2+160]
+                training=np.append(training,res1)    
+    
+                shi=20 #int( 30-(sc-80)/2 )
+                for sh in [-20,-10,0,10,20]: #range(-shi,shi,10):
+                    for sh2 in [-20,-10,0,10,20]: #range(-shi,shi,10):
+                        res9 = np.roll(res1, sh, axis=0)
+                        res9 = np.roll(res9, sh2, axis=1)
+                        grayplt(res9/255)
+                        training=np.append(training,res9)
+                        
+            print("shape:",training.shape)
+            training=training.reshape( int(training.shape[0]/76800),160,160,3)
+            
+            img1_representation = model.predict(training)
+            #savetxt('img%i_representation_%s_%s.csv' % (jjj,iii,sc), img1_representation, delimiter=',')
+            with open('img%i_merged_representation_%s.csv' % (jjj,iii), "ab") as f:
+                savetxt(f, img1_representation, delimiter=',')
+            
+            training=np.array([])
+            res5=im2
+            res=np.expand_dims(im2,axis=0)
+            training=np.append(training,res)
+    
+        for sc in range(180,220,20):
+            
+            #res1 = cv2.resize(res5,(sc, sc), interpolation = cv2.INTER_CUBIC)
+            res1=resize(res5,(sc,sc))
+            sc1=(sc-160)/2
+            sc1=int(sc1)
+            res1=res1[sc1:sc1+160,sc1:sc1+160]
+            print("998",sc)
+            grayplt(res1/255)
+        
+            #training.append(res.tolist())
+            training=np.append(training,res1)
+            for ang in [-45,-30,-15,0,15,30,45]:
+                img = ndimage.rotate(res1, ang, mode='nearest')
+                #print(img.shape)
+                trim1=(img.shape[0]-160)/(2)
+                trim1=int(trim1)
+                trim2=(img.shape[1]-160)/(2)
+                trim2=int(trim2)
+                res2=img[trim1:trim1+160,trim2:trim2+160]
+                training=np.append(training,res2)    
+    
+                shi=30 #int( 30-(sc-80)/2 )
+                for sh in [-20,-10,0,10,20]: #range(-shi,shi,10):
+                    for sh2 in [-20,-10,0,10,20]: #range(-shi,shi,10):
+                        res9 = np.roll(res2, sh, axis=0)
+                        res9 = np.roll(res9, sh2, axis=1)
+                        training=np.append(training,res9)
+    
+            print("shape:",training.shape)
+            training=training.reshape( int(training.shape[0]/76800),160,160,3)
+            
+            img1_representation = model.predict(training)
+            #savetxt('img%i_representation_%s_%s.csv' % (jjj,iii,sc), img1_representation, delimiter=',')
+            with open('img%i_merged_representation_%s.csv' % (jjj,iii), "ab") as ff:
+                savetxt(ff, img1_representation, delimiter=',')
+            
+            training=np.array([])
+            res5=im2
+            res=np.expand_dims(im2,axis=0)
+            training=np.append(training,res)
+    
+
+    #os.popen("copy img%i_representation_*.csv  img%i_merged_representation.csv" % (jjj,jjj) )        
+    '''
+    for i in range(training.shape[0]):
+        grayplt(training[i]/255)
+    raise
+    '''
+    #res=np.expand_dims(res,axis=0)
+    #return training
+
+
+#import tensorflow as tf
+
+'''
+with open('jsonmodel.json') as json_file:
+    json_config = json_file.read()
+model = model_from_json(json_config)
+
+#Pre-trained OpenFace weights: https://bit.ly/2Y34cB8
+model.load_weights("openface_weights.h5")
+'''
+#p2 = 'image2/frame2.jpg'
+#preprocess_image(p1)
+#raise 
+#img1_representation = model.predict(preprocess_image(p1))[0,:]
+#img2_representation = model.predict(preprocess_image(p2))[0,:]
+#training1=preprocess_image(p1)
+#savetxt('training1.csv', training1, delimiter=',')
+
+#img2_representation = model.predict(preprocess_image(p2))
+
+
+
+def findCosineDistance(source_representation, test_representation):
+    a = np.matmul(np.transpose(source_representation), test_representation)
+    b = np.sum(np.multiply(source_representation, source_representation))
+    c = np.sum(np.multiply(test_representation, test_representation))
+    return 1 - (a / (np.sqrt(b) * np.sqrt(c)))
+ 
+def l2_normalize(x, axis=-1, epsilon=1e-10):
+    output = x / np.sqrt(np.maximum(np.sum(np.square(x), axis=axis, keepdims=True), epsilon))
+    return output
+ 
+def findEuclideanDistance(source_representation, test_representation):
+    euclidean_distance = source_representation - test_representation
+    euclidean_distance = np.sum(np.multiply(euclidean_distance, euclidean_distance))
+    euclidean_distance = np.sqrt(euclidean_distance)
+    #euclidean_distance = l2_normalize(euclidean_distance )
+    return euclidean_distance
+ 
+'''
+cosine = findCosineDistance(img1_representation, img2_representation)
+euclidean = findEuclideanDistance(img1_representation, img2_representation)
+
+if cosine <= 0.02:
+   print("these are same")
+else:
+   print("these are different")
+'''
+#RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',max_depth=None, max_features='auto', max_leaf_nodes=None,min_impurity_split=1e-07, min_samples_leaf=1,min_samples_split=2, min_weight_fraction_leaf=0.0,n_estimators=10, n_jobs=2, oob_score=False, random_state=0,verbose=0, warm_start=False)

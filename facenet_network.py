@@ -207,22 +207,48 @@ def createModel():
     
     inputShape=(128,)
     inputs      = Input(shape=inputShape)
+    '''
     x=Reshape((128,1))(inputs)
     #x = Dense(128,activation="relu")(inputs)
-    x = Dense(64,activation="relu", kernel_initializer='he_normal')(x)
+    x = Dense(128,activation="relu", kernel_initializer='he_normal')(x)
     x = Dense(64,activation="relu", kernel_initializer='he_normal')(x)
     #x = Dense(32,activation="relu")(x)
     #x=Conv1D(64,kernel_size=(16,),activation="relu",padding="same")(x)
     #x=Conv1D(64,kernel_size=(8,),activation="relu",padding="same")(x)
     #x=AveragePooling1D(4)(x)
     x = Flatten()(x)
+    '''
+    x = Dense(128,activation="relu", kernel_initializer='he_normal')(inputs)
+    
     x = Dense(64,activation="relu", kernel_initializer='he_normal')(x)
     x = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
+    
+    x0 = Dense(32,activation="relu", kernel_initializer='he_normal')(inputs)
+    x1 = Dense(32,activation="relu", kernel_initializer='he_normal')(inputs)
+    x2 = Dense(32,activation="relu", kernel_initializer='he_normal')(inputs)
+    x3 = Dense(32,activation="relu", kernel_initializer='he_normal')(inputs)
+    
+    x0 = Dense(32,activation="relu", kernel_initializer='he_normal')(x0)
+    x1 = Dense(32,activation="relu", kernel_initializer='he_normal')(x1)
+    x2 = Dense(32,activation="relu", kernel_initializer='he_normal')(x2)
+    x3 = Dense(32,activation="relu", kernel_initializer='he_normal')(x3)
+    
+
     #x = Dense(20,activation="relu")(x)
     outputs0 = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
     outputs1 = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
     outputs2 = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
     outputs3 = Dense(32,activation="relu", kernel_initializer='he_normal')(x)
+    
+    outputs0 = concatenate([outputs0,x0])
+    outputs1 = concatenate([outputs1,x1])
+    outputs2 = concatenate([outputs2,x2])
+    outputs3 = concatenate([outputs3,x3])
+    
+    outputs0 = Dense(32,activation="relu", kernel_initializer='he_normal')(outputs0)
+    outputs1 = Dense(32,activation="relu", kernel_initializer='he_normal')(outputs1)
+    outputs2 = Dense(32,activation="relu", kernel_initializer='he_normal')(outputs2)
+    outputs3 = Dense(32,activation="relu", kernel_initializer='he_normal')(outputs3)
 
     outputs0 = Dense(16,activation="relu", kernel_initializer='he_normal')(outputs0)
     outputs1 = Dense(16,activation="relu", kernel_initializer='he_normal')(outputs1)
@@ -249,22 +275,9 @@ modelname="facenet_network"
 model.save(modelname + "_model.hdf5")
 
 def lrSchedule(epoch):
-    lr  = 5e-3
-    if epoch > 195:
-        lr  *= 1e-4
-    elif epoch > 180:
-        lr  *= 1e-3
-        
-    elif epoch > 160:
-        lr  *= 1e-2
-        
-    elif epoch > 140:
-        lr  *= 1e-1
-        
-    elif epoch > 120:
-        lr  *= 2e-1
-    elif epoch > 60:
-        lr  *= 0.5
+    lr  = 0.7e-3
+    if epoch > 10:
+        lr = 0.5e-3
         
     print('Learning rate: ', lr)
     
@@ -325,7 +338,7 @@ tsLbl[3]       = to_categorical(tsLbl[3])
 model.fit(trDat, 
             trLbl, 
             validation_data=(tsDat, tsLbl), 
-            epochs=5, 
+            epochs=10, 
             batch_size=1,
             callbacks=callbacks_list)
 model.save_weights(modelname + ".hdf5")
