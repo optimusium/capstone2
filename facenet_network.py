@@ -338,7 +338,7 @@ tsLbl[3]       = to_categorical(tsLbl[3])
 model.fit(trDat, 
             trLbl, 
             validation_data=(tsDat, tsLbl), 
-            epochs=10, 
+            epochs=15, 
             batch_size=1,
             callbacks=callbacks_list)
 model.save_weights(modelname + ".hdf5")

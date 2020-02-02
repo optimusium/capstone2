@@ -126,14 +126,14 @@ for imagee in images:
     print(keypoints['left_eye'][0])
 #raise
 '''
-'''
+
 model = load_model('facenet/facenet_keras.h5')
 model.summary()
 print(model.inputs)
 print(model.outputs)
 
 model.load_weights("facenet/facenet_keras_weights.h5")
-'''
+
 
 #images = ['frame2.jpg']
 #p2 = 'image2/frame3.jpg'
@@ -177,9 +177,9 @@ for img in images: #def preprocess_image(img):
     keypoints = result[0]['keypoints']
     #left_eye=image[keypoints['left_eye'][1]-20:keypoints['left_eye'][1]+20, keypoints['left_eye'][0]-20:keypoints['left_eye'][0]+20]
     #grayplt(left_eye/255)
-    new_bound=min(keypoints['left_eye'][1],keypoints['right_eye'][1])/3
+    new_bound=min(keypoints['left_eye'][1],keypoints['right_eye'][1])/4
     new_bound=int(new_bound)
-    new_bound1=(160-max(keypoints['mouth_left'][1],keypoints['mouth_right'][1]))/3
+    new_bound1=(160-max(keypoints['mouth_left'][1],keypoints['mouth_right'][1]))/4
     new_bound1=int(new_bound1)
     new_bound2=keypoints['left_eye'][0]/4
     new_bound2=int(new_bound2)
@@ -586,7 +586,7 @@ for imag in imags: #def preprocess_image(img):
             
             
             
-            for ang in [-45,-30,-15,0,15,30,45]:
+            for ang in [-45,-38,-30,-20,-10,0,10, 20,30,38,45]:
                 img = ndimage.rotate(res6, ang, mode='nearest')
                 #print(img.shape)
                 trim1=(img.shape[0]-160)/(2)
@@ -597,8 +597,8 @@ for imag in imags: #def preprocess_image(img):
                 training=np.append(training,res1)    
     
                 shi=20 #int( 30-(sc-80)/2 )
-                for sh in [-20,0,20]: #range(-shi,shi,10):
-                    for sh2 in [-20,0,20]: #range(-shi,shi,10):
+                for sh in [-20,-10,0,10,20]: #range(-shi,shi,10):
+                    for sh2 in [-20,-10,0,10,20]: #range(-shi,shi,10):
                         res9 = np.roll(res1, sh, axis=0)
                         res9 = np.roll(res9, sh2, axis=1)
                         grayplt(res9/255)
@@ -629,7 +629,7 @@ for imag in imags: #def preprocess_image(img):
         
             #training.append(res.tolist())
             training=np.append(training,res1)
-            for ang in [-45,-30,-15,0,15,30,45]:
+            for ang in [-45,-38,-30,-15,0,15,30,38,45]:
                 img = ndimage.rotate(res1, ang, mode='nearest')
                 #print(img.shape)
                 trim1=(img.shape[0]-160)/(2)
@@ -640,8 +640,8 @@ for imag in imags: #def preprocess_image(img):
                 training=np.append(training,res2)    
     
                 shi=30 #int( 30-(sc-80)/2 )
-                for sh in [-20,0,20]: #range(-shi,shi,10):
-                    for sh2 in [-20,0,20]: #range(-shi,shi,10):
+                for sh in [-20,-10,0,10,20]: #range(-shi,shi,10):
+                    for sh2 in [-20,-10,0,10,20]: #range(-shi,shi,10):
                         res9 = np.roll(res2, sh, axis=0)
                         res9 = np.roll(res9, sh2, axis=1)
                         training=np.append(training,res9)
