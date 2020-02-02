@@ -320,7 +320,7 @@ while True:
         
         img_temp=resized/255
         '''999
-        ######################
+-        ######################
         img_temp=resized/255
         adjusted = adjust_gamma(resized, gamma=1.2)
         #cv2.imshow('frame', adjusted)
