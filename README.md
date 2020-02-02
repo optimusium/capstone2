@@ -85,4 +85,30 @@ copy to facenet folder
     
     g) The facenet result is input to neural classifier (from step 4). Print the neural classifier result.
     
+    ############################
+    Training/Testing Sequence
+    ############################
     
+    Step 0: Use webcam_cv3_capture.py to capture image. Output is frame.jpg. Save frame.jpg as frame1.jpg or frame3.jpg (This is optional)
+    Step 1: Run facenet_predict3.py 
+    Step 2: Run svm.py , knn.py , logistic_regression.py
+    Step 3: Run voting.py
+    Step 4: Run facenet_network.py
+    Step 5: Testing using webcam_cv3_facenet3.py
+    
+    Note: To add more images, save as frameXX.jpg and include in "images" list in facenet_predict3.py
+          After running facenet_predict3.py (step 2), it will generate imgXX_merged_representation.csv
+          Hence, load the file in svm.py , knn.py , logistic_regression.py, voting.py and facenet_network.py
+          Append the following lines in these files:
+          X?? = loadtxt('img??_merged_representation.csv', delimiter=',')
+          Y0=np.append( Y0, np.zeros(50),axis=0) #ones(50) if that is a new target image.
+          Y1=np.append( Y1, np.zeros(50),axis=0)
+          Y2=np.append( Y2, np.zeros(50),axis=0)
+          Y3=np.append( Y3, np.zeros(50),axis=0)
+
+
+
+
+
+          
+    Step 1: 
