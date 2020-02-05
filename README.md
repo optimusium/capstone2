@@ -108,7 +108,3 @@ copy to facenet folder
 
 
 
-
-
-          
-    Step 1: 
